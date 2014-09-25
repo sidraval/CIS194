@@ -1,3 +1,5 @@
+import Test.HUnit
+
 toDigits :: Integer -> [Integer]
 toDigits n
   | n <= 0 = []
@@ -29,3 +31,13 @@ hanoi n first second third
   | otherwise = hanoi (n - 1) first third second ++
                 [(first, second)] ++
                 hanoi (n-1) third second first
+
+-- Tests
+
+testtoDigits = TestCase $ assertEqual "toDigits" (toDigits 1234) [1,2,3,4]
+testtoDigitsRev = TestCase $ assertEqual "toDigitsRev" (toDigitsRev 1234) [4,3,2,1]
+testdoubleEveryOther = TestCase $ assertEqual "doubleEveryOther" (doubleEveryOther [1,2,3,4,5]) [1,4,3,8,5]
+testsumDigits = TestCase $ assertEqual "sumDigits" (sumDigits [1, 12, 3, 45]) 16
+testhanoi = TestCase $ assertEqual "hanoi" (hanoi 2 "a" "b" "c") [("a","c"), ("a","b"), ("c","b")]
+
+tests = TestList [TestLabel "toDigits" testtoDigits,TestLabel "toDigitsRev" testtoDigitsRev, TestLabel "doubleEveryOther" testdoubleEveryOther, TestLabel "sumDigits" testsumDigits, TestLabel "hanoi" testhanoi]

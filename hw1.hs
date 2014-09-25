@@ -26,4 +26,6 @@ type Move = (Peg, Peg)
 hanoi :: Integer -> Peg -> Peg -> Peg -> [Move]
 hanoi n first second third
   | n < 2 = [(first, second)]
-  | otherwise = (hanoi (n - 1) first third second) ++ [(first, second)] ++ (hanoi (n-1) third second first)
+  | otherwise = hanoi (n - 1) first third second ++
+                [(first, second)] ++
+                hanoi (n-1) third second first

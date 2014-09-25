@@ -19,3 +19,11 @@ sumDigits = sum . map (sum . toDigits)
 
 validate :: Integer -> Bool
 validate x = (sumDigits . doubleEveryOther . toDigits $ x) `mod` 10 == 0
+
+type Peg = String
+type Move = (Peg, Peg)
+
+hanoi :: Integer -> Peg -> Peg -> Peg -> [Move]
+hanoi n first second third
+  | n < 2 = [(first, second)]
+  | otherwise = (hanoi (n - 1) first third second) ++ [(first, second)] ++ (hanoi (n-1) third second first)

@@ -1,4 +1,5 @@
 import Test.HUnit
+import Test.QuickCheck
 
 toDigits :: Integer -> [Integer]
 toDigits n
@@ -30,9 +31,9 @@ hanoi n first second third
   | n < 2 = [(first, second)]
   | otherwise = hanoi (n - 1) first third second ++
                 [(first, second)] ++
-                hanoi (n-1) third second first
+                hanoi (n - 1) third second first
 
--- Tests
+-- HUnit Tests
 
 testtoDigits = TestCase $ assertEqual "toDigits" (toDigits 1234) [1,2,3,4]
 testtoDigitsRev = TestCase $ assertEqual "toDigitsRev" (toDigitsRev 1234) [4,3,2,1]
@@ -41,3 +42,10 @@ testsumDigits = TestCase $ assertEqual "sumDigits" (sumDigits [1, 12, 3, 45]) 16
 testhanoi = TestCase $ assertEqual "hanoi" (hanoi 2 "a" "b" "c") [("a","c"), ("a","b"), ("c","b")]
 
 tests = TestList [TestLabel "toDigits" testtoDigits,TestLabel "toDigitsRev" testtoDigitsRev, TestLabel "doubleEveryOther" testdoubleEveryOther, TestLabel "sumDigits" testsumDigits, TestLabel "hanoi" testhanoi]
+
+-- QuickCheck Invariants
+
+invarianceOfLength s = length (doubleEveryOther s) == length s
+
+invarianceOfSum s = sum positives <= (sum $ doubleEveryOther positives)
+                    where positives = filter (\x -> x > 0) s

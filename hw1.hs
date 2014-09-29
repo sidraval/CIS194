@@ -11,7 +11,7 @@ toDigitsRev = reverse . toDigits
 
 doubleEveryOtherBackward :: [Integer] -> [Integer]
 doubleEveryOtherBackward (x:y:xs) = [x, y * 2] ++ doubleEveryOtherBackward xs
-doubleEveryOtherBackward (x:[]) = [x]
+doubleEveryOtherBackward [x] = [x]
 doubleEveryOtherBackward [] = []
 
 doubleEveryOther :: [Integer] -> [Integer]
@@ -47,5 +47,5 @@ tests = TestList [TestLabel "toDigits" testtoDigits,TestLabel "toDigitsRev" test
 
 invarianceOfLength s = length (doubleEveryOther s) == length s
 
-invarianceOfSum s = sum positives <= (sum $ doubleEveryOther positives)
-                    where positives = filter (\x -> x > 0) s
+invarianceOfSum s = sum positives <= sum (doubleEveryOther positives)
+                    where positives = filter (> 0) s

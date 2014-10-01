@@ -33,6 +33,13 @@ hanoi n first second third
                 [(first, second)] ++
                 hanoi (n - 1) third second first
 
+hanoi' :: Integer -> Peg -> Peg -> Peg -> Peg -> [Move]
+hanoi' 1 a b c d = [(a,b)]
+hanoi' n a b c d = hanoi' (n-2) a c d b ++ 
+                   hanoi'(n-2) a d c b ++ [(a,b)] ++ 
+                   hanoi' (n-1) c b a d ++ 
+                   hanoi' (n-1) d b a c 
+
 -- HUnit Tests
 
 testtoDigits = TestCase $ assertEqual "toDigits" (toDigits 1234) [1,2,3,4]

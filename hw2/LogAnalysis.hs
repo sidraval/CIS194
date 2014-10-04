@@ -36,3 +36,6 @@ insertLogMessage newLogMessage (Node leftMessageTree existingLogMessage rightMes
 lessThan :: LogMessage -> LogMessage -> Bool
 lessThan (LogMessage _ t1 _) (LogMessage _ t2 _) = t1 < t2
 lessThan _ _ = False
+
+build :: [LogMessage] -> MessageTree
+build = foldl' (\accum logMessage -> insertLogMessage logMessage accum) Leaf

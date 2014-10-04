@@ -26,10 +26,12 @@ parseMessage x = Unknown x
 parse :: String -> [LogMessage]
 parse = map parseMessage . lines
 
-{- insert :: LogMessage -> MessageTree -> MessageTree -}
-{- insert logMessage Leaf = Node Leaf logMessage Leaf -}
-{- insert logMessage (Node leftMessageTree badLogMessage rightMessageTree) -}
-  {- | logMessage  -}
+insertLogMessage :: LogMessage -> MessageTree -> MessageTree
+insertLogMessage logMessage Leaf = Node Leaf logMessage Leaf
+insertLogMessage (Unknown _) x = x
+insertLogMessage newLogMessage (Node leftMessageTree existingLogMessage rightMessageTree)
+  | newLogMessage `lessThan` existingLogMessage = Node (insertLogMessage newLogMessage leftMessageTree) existingLogMessage rightMessageTree
+  | otherwise = Node leftMessageTree existingLogMessage (insertLogMessage newLogMessage rightMessageTree)
 
 lessThan :: LogMessage -> LogMessage -> Bool
 lessThan (LogMessage _ t1 _) (LogMessage _ t2 _) = t1 < t2

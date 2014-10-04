@@ -39,3 +39,7 @@ lessThan _ _ = False
 
 build :: [LogMessage] -> MessageTree
 build = foldl' (\accum logMessage -> insertLogMessage logMessage accum) Leaf
+
+inOrder :: MessageTree -> [LogMessage]
+inOrder Leaf = []
+inOrder (Node leftMessageTree logMessage rightMessageTree) = (inOrder leftMessageTree) ++ [logMessage] ++ (inOrder rightMessageTree)

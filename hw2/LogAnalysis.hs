@@ -43,3 +43,10 @@ build = foldl' (\accum logMessage -> insertLogMessage logMessage accum) Leaf
 inOrder :: MessageTree -> [LogMessage]
 inOrder Leaf = []
 inOrder (Node leftMessageTree logMessage rightMessageTree) = (inOrder leftMessageTree) ++ [logMessage] ++ (inOrder rightMessageTree)
+
+whatWentWrong :: [LogMessage] -> [String]
+whatWentWrong xs = map (\(LogMessage _ _ string) -> string) $ filter errorsOverFifty $ inOrder $ build xs
+
+errorsOverFifty :: LogMessage -> Bool
+errorsOverFifty (LogMessage (Error s) _ _) = s >= 50
+errorsOverFifty _ = False

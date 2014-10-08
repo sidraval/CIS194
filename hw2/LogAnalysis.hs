@@ -26,11 +26,40 @@ parseMessage x = Unknown x
 parse :: String -> [LogMessage]
 parse = map parseMessage . lines
 
-{- insert :: LogMessage -> MessageTree -> MessageTree -}
-{- insert logMessage Leaf = Node Leaf logMessage Leaf -}
-{- insert logMessage (Node leftMessageTree badLogMessage rightMessageTree) -}
-  {- | logMessage  -}
+insertMe :: LogMessage -> MessageTree -> MessageTree
+insertMe (Unknown _) messageTree = messageTree
+insertMe logMessage Leaf = Node Leaf logMessage Leaf
+insertMe logMessage (Node leftMessageTree currentLogMessage rightMessageTree)
+ | logMessage `lessThan` currentLogMessage = Node (insertMe logMessage leftMessageTree) currentLogMessage rightMessageTree
+ | otherwise = Node leftMessageTree currentLogMessage (insertMe logMessage rightMessageTree)
 
 lessThan :: LogMessage -> LogMessage -> Bool
 lessThan (LogMessage _ t1 _) (LogMessage _ t2 _) = t1 < t2
 lessThan _ _ = False
+
+buildTree :: [LogMessage] -> MessageTree
+buildTree [] = Leaf
+buildTree (logMessage:[]) = insertMe logMessage Leaf
+buildTree (logMessage:logMessages) = insertMe logMessage (buildTree logMessages)
+
+inOrder :: MessageTree -> [LogMessage]
+inOrder Leaf = []
+inOrder (Node Leaf logMessage Leaf) = [logMessage]
+inOrder (Node leftMessageTree currentLogMessage rightMessageTree) = inOrder leftMessageTree ++ [currentLogMessage] ++ inOrder rightMessageTree
+
+getString :: LogMessage -> String
+getString (Unknown str) = str
+getString (LogMessage _ _ str) = str
+
+getErrors :: [LogMessage] -> [LogMessage]
+getErrors logMessages = filter isSevereError logMessages
+
+isSevereError :: LogMessage -> Bool
+isSevereError (Unknown _) = False
+isSevereError (LogMessage (Error num) _ _) = num > 50
+isSevereError (LogMessage _ _ _) = False
+
+whatWentWrong :: [LogMessage] -> [String]
+whatWentWrong logMessages = map getString (inOrder $ buildTree $ getErrors logMessages)
+
+

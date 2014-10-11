@@ -10,15 +10,14 @@ isLocalMaxima (x:y:z:_)
   | otherwise = []
 
 localMaxima :: [Integer] -> [Integer]
-localMaxima (x:[]) = []
-localMaxima (x:y:[]) = []
 localMaxima (x:y:z:others) = isLocalMaxima (x:y:z:[]) ++ localMaxima (y:z:others)
+localMaxima (x:_) = []
 
 histogram :: [Integer] -> String
-histogram = unlines . reverse . map oneLine . mappedData
+histogram = unlines . map oneLine . mappedData
 
 mappedData :: [Integer] -> [[Integer]]
-mappedData xs = filter (not . null) $ foldl (\accum el -> accum ++ [reduceData . last $ accum]) [xs] xs
+mappedData xs = filter (not . null) $ foldl (\accum el -> [reduceData . head $ accum] ++ accum) [xs] xs
 
 reduceData :: [Integer] -> [Integer]
 reduceData xs = foldl (\accum el -> delete el accum) xs [0..9]

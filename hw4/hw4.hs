@@ -15,10 +15,7 @@ collatz n
 {- foldTree = foldr (\accum el -> ) Leaf  -}
 
 xor :: [Bool] -> Bool
-xor = foldl maybeFlip False
-
-maybeFlip x True = not x
-maybeFlip x False = x
+xor = foldl (\accum el -> (accum || el) && (not (accum && el))) False
 
 mapz :: (a -> b) -> [a] -> [b]
 mapz f = foldl (\accum el -> accum ++ [f el]) []

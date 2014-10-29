@@ -12,9 +12,18 @@ collatz n
   | even n = n `div` 2
   | otherwise = 3 * n + 1
 
-{- data Tree a = Leaf | Node Integer (Tree a) a (Tree a) -}
-{- foldTree :: [a] -> Tree a -}
-{- foldTree = foldr (\accum el -> ) Leaf  -}
+data Tree a = Leaf | Node Integer (Tree a) a (Tree a) deriving Show
+foldTree :: [a] -> Tree a
+foldTree = foldl (\accum el -> accumTree accum el) Leaf
+
+accumTree :: Tree a -> a -> Tree a
+accumTree Leaf x = Node 0 Leaf x Leaf
+accumTree (Node i (Node j l p r) z (Node k m q n)) x
+  | j < k = Node (i + 1) (accumTree (Node j l p r) x) z (Node k m q n)
+  | otherwise =  Node (i + 1) (Node j l p r) z (accumTree (Node k m q n) x)
+accumTree (Node i (Node a b c d) z Leaf) x = Node (i + 1) (Node a b c d) z (accumTree Leaf x)
+accumTree (Node i Leaf z (Node a b c d)) x = Node (i + 1) (accumTree Leaf x) z (Node a b c d)
+accumTree (Node i Leaf z Leaf) x = Node (i+1) (accumTree Leaf x) z Leaf
 
 xor :: [Bool] -> Bool
 xor = foldl (\accum el -> (accum || el) && (not (accum && el))) False

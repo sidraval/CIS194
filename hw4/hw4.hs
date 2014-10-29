@@ -20,9 +20,11 @@ accumTree :: Tree a -> a -> Tree a
 accumTree Leaf x = Node 0 Leaf x Leaf
 accumTree (Node i (Node j l p r) z (Node k m q n)) x
   | j < k = Node (j + 1) (accumTree (Node j l p r) x) z (Node k m q n)
-  | j >= k =  Node (k + 1) (Node j l p r) z (accumTree (Node k m q n) x)
-accumTree (Node i (Node a b c d) z Leaf) x = Node (i + 1) (Node a b c d) z (accumTree Leaf x)
-accumTree (Node i Leaf z (Node a b c d)) x = Node (i + 1) (accumTree Leaf x) z (Node a b c d)
+  | j > k =  Node (k + 1) (Node j l p r) z (accumTree (Node k m q n) x)
+  | otherwise = Node (i + 1) (Node j l p r) z (accumTree (Node k m q n) x)
+
+accumTree (Node i (Node a b c d) z Leaf) x = Node i (Node a b c d) z (accumTree Leaf x)
+accumTree (Node i Leaf z (Node a b c d)) x = Node i (accumTree Leaf x) z (Node a b c d)
 accumTree (Node i Leaf z Leaf) x = Node (i+1) (accumTree Leaf x) z Leaf
 
 xor :: [Bool] -> Bool

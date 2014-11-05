@@ -51,6 +51,3 @@ instance Expr MinMax where
   lit k = MinMax k
   mul (MinMax x) (MinMax y) = MinMax (min x y)
   add (MinMax x) (MinMax y) = MinMax (max x y)
-
-{- instance Expr Program where -}
-  {- lit V -}

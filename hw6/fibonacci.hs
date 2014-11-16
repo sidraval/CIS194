@@ -1,3 +1,5 @@
+{-# LANGUAGE FlexibleInstances #-}
+
 import Data.List
 
 fib :: Integer -> Integer
@@ -41,4 +43,21 @@ streamFromSeed f x = Cons (f x) (streamFromSeed f (f x))
 nats :: Stream Integer
 nats = streamFromList [0..]
 
-ruler :: Stream Integer
+{- ruler :: Stream Integer -}
+
+-- Extra Credit
+
+x :: Stream Integer
+x = streamFromList $ [0,1] ++ repeat 0
+
+instance Num (Stream Integer) where
+  fromInteger n = streamFromList $ [n] ++ repeat 0
+  negate = streamMap negate
+  (+) (Cons x xs) (Cons y ys) = Cons (x + y) (xs + ys)
+  (*) (Cons x xs) (Cons y ys) = Cons (x * y) ((streamFromList $ [x] ++ repeat 0) * ys + xs * (Cons y ys))
+
+instance Fractional (Stream Integer) where
+  (/) (Cons x xs) (Cons y ys) = Cons (x `div` y) ((streamFromList $ [1 `div` y] ++ repeat 0) * (ys - ((Cons x xs) / (Cons y ys)) * (ys)))
+
+fibs3 :: Stream Integer
+fibs3 = x / (streamFromList $ ([1,-1,-1] ++ repeat 0))

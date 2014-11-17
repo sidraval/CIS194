@@ -61,3 +61,14 @@ instance Fractional (Stream Integer) where
 
 fibs3 :: Stream Integer
 fibs3 = x / (streamFromList $ ([1,-1,-1] ++ repeat 0))
+
+data Matrix a = Matrix a a a a deriving (Eq, Show)
+
+instance Num (Matrix Integer) where
+  (*) (Matrix a b c d) (Matrix i j k l) = Matrix (a*i + b*k) (a*j + b*l) (c*i + d*k) (c*j + b*l)
+
+fibs4 :: Integer -> Integer
+fibs4 k = topRight $ (Matrix 1 1 1 0)^k
+
+topRight :: Matrix a -> a
+topRight (Matrix a _ _ _) = a

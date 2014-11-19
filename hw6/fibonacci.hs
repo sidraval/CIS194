@@ -11,14 +11,8 @@ fib n = fib (n - 1) + fib (n - 2)
 fibl :: [Integer]
 fibl = map fib [0..]
 
-{- fibs2 :: [Integer] -}
-{- fibs2 = foldr (\el accum -> (fib' $ reverse accum):(reverse accum)) [0,1] [0..] -}
-
-fibs2' [] = [0]
-fibs2' [0,1] = [0,1]
-fibs2' xs = (xs ++ [fib' $ reverse xs])
-
-fib' = sum . take 2
+fibs2 :: [Integer]
+fibs2 = 0 : 1 : zipWith (+) fibs2 (tail fibs2)
 
 data Stream a = Cons a (Stream a)
 
@@ -42,10 +36,6 @@ streamFromSeed f x = Cons (f x) (streamFromSeed f (f x))
 
 nats :: Stream Integer
 nats = streamFromList [0..]
-
-{- ruler :: Stream Integer -}
-
--- Extra Credit
 
 x :: Stream Integer
 x = streamFromList $ [0,1] ++ repeat 0

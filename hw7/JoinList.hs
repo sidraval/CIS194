@@ -29,3 +29,17 @@ instance Sized Int where
 instance Monoid Int where
   mempty = 0
   mappend = (+)
+
+dropJ :: (Sized b, Monoid b) => Int -> JoinList b a -> JoinList b a
+dropJ i (Single m a)
+  | i > 0 = Empty
+  | otherwise = Single m a
+dropJ i (Append m first second)
+  | i == 0 = Append m first second
+  | i > (getSize . size $ tag first) = (Append m Empty (dropJ (i - (getSize $ size m)) second))
+  | otherwise = (Append m (dropJ i first) second)
+
+jlToList :: JoinList m a -> [a]
+jlToList Empty = []
+jlToList (Single _ a) = [a]
+jlToList (Append _ l1 l2) = jlToList l1 ++ jlToList l2

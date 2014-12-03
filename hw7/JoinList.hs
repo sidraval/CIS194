@@ -2,6 +2,7 @@ module JoinList where
 
 import Data.Monoid
 import Sized
+import Scrabble
 
 data JoinList m a = Empty
   | Single m a
@@ -38,6 +39,15 @@ dropJ i (Append m first second)
   | i == 0 = Append m first second
   | i > (getSize . size $ tag first) = (Append m Empty (dropJ (i - (getSize $ size m)) second))
   | otherwise = (Append m (dropJ i first) second)
+
+takeJ :: (Sized b, Monoid b) => Int -> JoinList b a -> JoinList b a
+takeJ i (Single m a)
+  | i > 0 = Single m a
+  | otherwise = Empty
+takeJ i (Append m first second)
+  | i == 0 = Empty
+  | i > (getSize . size $ tag first) = (Append m first (takeJ (i - (getSize $ size m)) second))
+  | otherwise = (Append m (takeJ i first) Empty)
 
 jlToList :: JoinList m a -> [a]
 jlToList Empty = []

@@ -1,8 +1,10 @@
+{-# LANGUAGE TypeSynonymInstances, FlexibleInstances #-}
 module JoinList where
 
 import Data.Monoid
 import Sized
 import Scrabble
+import Buffer
 
 data JoinList m a = Empty
   | Single m a
@@ -53,3 +55,14 @@ jlToList :: JoinList m a -> [a]
 jlToList Empty = []
 jlToList (Single _ a) = [a]
 jlToList (Append _ l1 l2) = jlToList l1 ++ jlToList l2
+
+scoreLine :: String -> JoinList Score String
+scoreLine string = Single (scoreString string) string
+
+instance Buffer (JoinList (Score, Size) String) where
+  toString (Single m a) = a
+  toString (Append m first second) = toString first ++ toString second
+  fromString string = foldl (\accum el -> accum +++ (Single (scoreString el, Size 1) el)) Empty (lines string)
+  line = indexJ
+  numLines jl = getSize . size $ tag jl
+  value jl = getScore . fst $ tag jl

@@ -66,9 +66,11 @@ first :: (a -> b) -> (a, c) -> (b, c)
 first f (a, c) = (f a, c)
 
 instance Applicative Parser where
+  -- pure :: a -> Parser a
   pure a = Parser f
     where
       f xs = Just (a, xs)
+  -- p1 <*> p2 :: Parser (a -> b) -> Parser a -> Parser b
   p1 <*> p2 = Parser f
     where
       f xs = case (runParser p1 xs) of
@@ -79,3 +81,12 @@ instance Applicative Parser where
         -- fmap (first fab) :: Maybe (a, c) -> Maybe (b, c)
         -- (runParser p2) :: String -> Maybe (a, c)
         -- fmap (first fab) . (runParser p2) :: String -> Maybe (b, c) ##### PARSER FUNCTION!
+
+abParser :: Parser (Char, Char)
+abParser = (\x y -> (x, y)) <$> (satisfy (== 'a')) <*> (satisfy (== 'b'))
+
+abParser_ :: Parser ()
+abParser_ = (\x y -> ()) <$> (satisfy (== 'a')) <*> (satisfy (== 'b'))
+
+intPair :: Parser [Integer]
+intPair = (\x y z -> [x,z]) <$> posInt <*> (satisfy (== ' ')) <*> posInt

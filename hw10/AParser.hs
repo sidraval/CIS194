@@ -94,3 +94,6 @@ intPair = (\x y z -> [x,z]) <$> posInt <*> (satisfy (== ' ')) <*> posInt
 instance Alternative Parser where
   empty = Parser (\x -> Nothing)
   (Parser f) <|> (Parser g) = Parser (\xs -> f xs <|> g xs)
+
+intOrUppercase :: Parser ()
+intOrUppercase = (const () <$> posInt) <|> (const () <$> (satisfy isUpper))

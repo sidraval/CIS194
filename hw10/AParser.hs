@@ -90,3 +90,7 @@ abParser_ = (\x y -> ()) <$> (satisfy (== 'a')) <*> (satisfy (== 'b'))
 
 intPair :: Parser [Integer]
 intPair = (\x y z -> [x,z]) <$> posInt <*> (satisfy (== ' ')) <*> posInt
+
+instance Alternative Parser where
+  empty = Parser (\x -> Nothing)
+  (Parser f) <|> (Parser g) = Parser (\xs -> f xs <|> g xs)
